@@ -1319,11 +1319,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\UCR CURSOS\\Compromiso Social\\Investigacion\\Proyecto con TailWindCSS\\Proyecto_1_Lenguajes_2025\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853.csproj",
+      "projectUniqueName": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\Gestor-de-Tareas\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853.csproj",
       "projectName": "Proyecto_1_C14644_C17853",
-      "projectPath": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\UCR CURSOS\\Compromiso Social\\Investigacion\\Proyecto con TailWindCSS\\Proyecto_1_Lenguajes_2025\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853.csproj",
+      "projectPath": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\Gestor-de-Tareas\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853.csproj",
       "packagesPath": "C:\\Users\\JesnerEliecerMelgara\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\UCR CURSOS\\Compromiso Social\\Investigacion\\Proyecto con TailWindCSS\\Proyecto_1_Lenguajes_2025\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\obj\\",
+      "outputPath": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\Gestor-de-Tareas\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

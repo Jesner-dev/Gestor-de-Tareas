@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kuGv7fcBzH4=",
+  "dgSpecHash": "7OiLl9b+3lM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\UCR CURSOS\\Compromiso Social\\Investigacion\\Proyecto con TailWindCSS\\Proyecto_1_Lenguajes_2025\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853.csproj",
+  "projectFilePath": "C:\\Users\\JesnerEliecerMelgara\\Desktop\\Gestor-de-Tareas\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853\\Proyecto_1_C14644_C17853.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\JesnerEliecerMelgara\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\2.3.0\\microsoft.aspnetcore.cryptography.internal.2.3.0.nupkg.sha512",
     "C:\\Users\\JesnerEliecerMelgara\\.nuget\\packages\\microsoft.aspnetcore.dataprotection\\2.3.0\\microsoft.aspnetcore.dataprotection.2.3.0.nupkg.sha512",
