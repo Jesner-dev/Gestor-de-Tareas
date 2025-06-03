@@ -1,0 +1,128 @@
+﻿@{
+    Layout = null;
+}
+@model LoginUsuario
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-900 text-white font-sans">
+
+    <div class="container mx-auto px-4">
+        <div class="flex justify-center">
+            <div class="w-full max-w-md">
+                <div class="bg-gray-800 shadow-lg rounded-xl border-0">
+                    <div class="p-10">
+                        <h3 class="text-center text-2xl font-bold mb-8">Inicio de Sesión</h3>
+
+                        @if (!ViewData.ModelState.IsValid || ViewData["ErrorMessage"] != null)
+                        {
+                            <div class="flex items-center bg-red-500 text-white rounded-lg p-4 mb-6">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.964 0L.165 13.233c-.457.778.091 1.767.982 1.767h13.706c.89 0 1.438-.99.982-1.767L8.982 1.566zm-.982 10.08a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm.165-4.694a.905.905 0 0 1 1.65 0l.085 3.52a.905.905 0 0 1-1.82 0l.085-3.52z" />
+                                </svg>
+                                <div>
+                                    @if (!ViewData.ModelState.IsValid)
+                                    {
+                                        <p class="mb-0">Los datos ingresados son inválidos.</p>
+                                    }
+                                    @if (ViewData["ErrorMessage"] != null)
+                                    {
+                                        <p class="mb-0">@ViewData["ErrorMessage"]</p>
+                                    }
+                                </div>
+                                <button type="button" class="ml-auto text-white" data-bs-dismiss="alert" aria-label="Close">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        }
+
+                        <form asp-action="SignIn" asp-controller="Login" method="post" class="was-validated" novalidate>
+                            <div class="mb-6">
+                                <label for="email" class="block text-gray-300 mb-2">Correo Electrónico</label>
+                                <input type="email" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 peer"
+                                       id="email" asp-for="Email" placeholder="Correo Electrónico" required
+                                       oninput="validateField(this)">
+                                <div class="text-red-400 text-sm mt-1 hidden peer-invalid:block">
+                                    Por favor, ingrese un correo electrónico válido.
+                                </div>
+                                <div class="text-green-500 text-sm mt-1 hidden peer-valid:block">
+                                    ✓ Correo válido
+                                </div>
+                                <span asp-validation-for="Email" class="text-red-400 text-sm"></span>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="password" class="block text-gray-300 mb-2">Contraseña</label>
+                                <input type="password" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300 peer"
+                                       id="password" asp-for="Password" placeholder="Contraseña" required minlength="4"
+                                       oninput="validateField(this)">
+                                <div class="text-red-400 text-sm mt-1 hidden peer-invalid:block">
+                                    La contraseña debe tener al menos 4 caracteres.
+                                </div>
+                                <div class="text-green-500 text-sm mt-1 hidden peer-valid:block">
+                                    ✓ Contraseña válida
+                                </div>
+                                <span asp-validation-for="Password" class="text-red-400 text-sm"></span>
+                            </div>
+
+                            <div class="flex items-center mb-6">
+                                <input class="w-5 h-5 bg-gray-700 border border-gray-600 rounded checked:bg-blue-500" type="checkbox" id="rememberMe" checked>
+                                <label class="ml-2 text-gray-300" for="rememberMe">Recordarme</label>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3 px-4 rounded-lg hover:shadow-lg transform hover:-translate-y-1 transition duration-300">
+                                Iniciar sesión
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function validateField(input) {
+            const parent = input.parentElement;
+
+            if (input.checkValidity()) {
+                // Campo válido
+                input.classList.remove('border-gray-600');
+                input.classList.remove('border-red-500');
+                input.classList.add('border-green-500');
+
+                // Ocultar mensaje de error de ASP.NET si existe
+                const aspError = parent.querySelector('[asp-validation-for]');
+                if (aspError) {
+                    aspError.textContent = '';
+                }
+            } else {
+                // Campo inválido
+                input.classList.remove('border-green-500');
+                input.classList.remove('border-gray-600');
+                input.classList.add('border-red-500');
+            }
+        }
+
+        // Validación inicial al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input[required]');
+            inputs.forEach(input => {
+                validateField(input);
+
+                // Validar también al perder el foco
+                input.addEventListener('blur', () => validateField(input));
+            });
+        });
+    </script>
+</body>
+</html>

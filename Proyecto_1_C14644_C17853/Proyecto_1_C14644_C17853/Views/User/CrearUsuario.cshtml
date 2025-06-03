@@ -1,0 +1,43 @@
+﻿@model Usuario
+
+<div class="flex items-center justify-center min-h-screen bg-[#1a1a1a] text-white p-5">
+    <div class="w-full max-w-lg bg-[#2a2a2a] rounded-xl shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-[#0079bf] to-[#005f99] text-white rounded-t-xl px-6 py-4 flex justify-between items-center">
+            <h5 class="text-xl font-bold m-0">Crear Usuario</h5>
+        </div>
+
+        <!-- Body -->
+        <div class="px-6 py-5 text-[#e0e0e0]">
+            <form asp-controller="User" asp-action="CrearUsuario" method="post" novalidate>
+                <!-- Nombre -->
+                <div class="mb-5">
+                    <label asp-for="Nombre" class="block text-white font-bold mb-2">Nombre</label>
+                    <input asp-for="Nombre" type="text" required placeholder="Nombre del usuario"
+                           class="w-full bg-[#3a3a3a] border border-[#555] text-white rounded-lg px-4 py-3 text-base placeholder-[#b3b3b3] focus:outline-none focus:ring-2 focus:ring-[#0079bf] transition-all duration-300" />
+                    <div class="mt-1 text-sm text-red-500 hidden peer-invalid:block">
+                        Por favor, ingrese el nombre del usuario.
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-5">
+                    <label asp-for="Email" class="block text-white font-bold mb-2">Email</label>
+                    <input asp-for="Email" type="email" required placeholder="Correo electrónico"
+                           class="w-full bg-[#3a3a3a] border border-[#555] text-white rounded-lg px-4 py-3 text-base placeholder-[#b3b3b3] focus:outline-none focus:ring-2 focus:ring-[#0079bf] transition-all duration-300" />
+                    <div class="mt-1 text-sm text-red-500 hidden peer-invalid:block">
+                        Por favor, ingrese un correo electrónico válido.
+                    </div>
+                </div>
+
+                <!-- Botón -->
+                <div class="flex justify-end pt-2">
+                    <button type="submit"
+                            class="bg-gradient-to-r from-[#0079bf] to-[#005f99] text-white font-bold text-base px-6 py-3 rounded-lg transition-transform transform hover:-translate-y-0.5 hover:shadow-lg">
+                        Crear
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

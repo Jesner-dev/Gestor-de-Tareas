@@ -1,0 +1,278 @@
+﻿@using Proyecto_1_C14644_C17853.Utility
+@model TableroViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla Tareas</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/principal.js"></script>
+</head>
+<body class="bg-gray-900 text-white p-0 m-0 font-sans">
+    <!-- Alert Boxes -->
+    <div class="flex justify-center">
+        <div id="alertBox" class="alert alert-success hidden bg-green-500 text-white px-4 py-2 rounded mb-4">
+            <strong id="alertMessage">Success!</strong>
+        </div>
+        <div id="alertBoxDanger" class="alert alert-danger hidden bg-red-500 text-white px-4 py-2 rounded mb-4">
+            <strong id="alertMessageDanger">Danger!</strong>
+        </div>
+    </div>
+
+    <h1 class="text-center text-white text-2xl mb-5">Tabla de Tareas</h1>
+
+    <!-- Button to open modal -->
+    <button id="openModalBtn" class="block mx-auto mb-8 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300" onclick="cargarUsuarios()">
+        Crear Nueva Tarea
+    </button>
+
+    <!-- Spinner -->
+    <div class="flex justify-center hidden">
+        <div id="spinner" class="spinner-border m-5 hidden" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Create Task Modal - Versión mejorada -->
+    <div class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" id="taskModal" tabindex="-1">
+        <div class="w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto">
+            <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-5 flex justify-between items-center sticky top-0 z-10">
+                    <h5 class="text-xl font-bold" id="taskModalLabel">Crear Nueva Tarea</h5>
+                    <button type="button" class="text-white text-2xl hover:text-gray-300 focus:outline-none" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="p-5">
+                    <form asp-controller="Main" asp-action="CrearTarea" method="post" id="createTaskForm" class="was-validated space-y-4">
+                        <div>
+                            <label for="Title" class="block text-white font-medium mb-1">Título</label>
+                            <input type="text" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                   id="Title" name="Tarea.Titulo" placeholder="Título" required />
+                            <div class="mt-1 text-xs text-red-400">
+                                Por favor, ingrese el título de la tarea.
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="Description" class="block text-white font-medium mb-1">Descripción</label>
+                            <textarea class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm h-24"
+                                      id="Description" name="Tarea.Descripcion" placeholder="Descripción"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="DueDate" class="block text-white font-medium mb-1">Fecha de Vencimiento</label>
+                                <input type="date" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                       id="DueDate" name="Tarea.FechaVencimiento" required />
+                                <div class="mt-1 text-xs text-red-400">
+                                    Por favor, ingrese la fecha de vencimiento.
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="Priority" class="block text-white font-medium mb-1">Prioridad</label>
+                                <select class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                        id="Priority" name="Tarea.Prioridad" required>
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                                <div class="mt-1 text-xs text-red-400">
+                                    Por favor, seleccione la prioridad.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="AssignedTo" class="block text-white font-medium mb-1">Asignado a</label>
+                            <div id="AssignedTo" class="max-h-40 overflow-y-auto p-2 bg-gray-700 rounded-lg space-y-2">
+                                <!-- Los usuarios se cargarán dinámicamente -->
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="Tarea.Estado" value="@Utility.Pendiente" />
+                        <input type="hidden" name="Tablero.Tareas" value="@Html.Raw(Json.Serialize(Model.Tablero.Tareas))" />
+
+                        <button type="submit" class="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                            Crear Tarea
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal - Versión mejorada -->
+    <div class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" id="editTaskModal" tabindex="-1">
+        <div class="w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto">
+            <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-5 flex justify-between items-center sticky top-0 z-10">
+                    <h5 class="text-xl font-bold" id="editTaskModalLabel">Editar Tarea</h5>
+                    <button type="button" class="text-white text-2xl hover:text-gray-300 focus:outline-none" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="p-5">
+                    <form id="editTaskForm" class="was-validated space-y-4">
+                        <input type="hidden" id="editTaskId" name="Tarea.Id_Tarea" />
+
+                        <div>
+                            <label for="editTitle" class="block text-white font-medium mb-1">Título</label>
+                            <input type="text" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                   id="editTitle" name="Tarea.Titulo" placeholder="Título" required />
+                            <div class="mt-1 text-xs text-red-400">
+                                Por favor, ingrese el título de la tarea.
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="editDescription" class="block text-white font-medium mb-1">Descripción</label>
+                            <textarea class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm h-24"
+                                      id="editDescription" name="Tarea.Descripcion" placeholder="Descripción"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="editDueDate" class="block text-white font-medium mb-1">Fecha de Vencimiento</label>
+                                <input type="date" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                       id="editDueDate" name="Tarea.FechaVencimiento" required />
+                                <div class="mt-1 text-xs text-red-400">
+                                    Por favor, ingrese la fecha de vencimiento.
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="editPriority" class="block text-white font-medium mb-1">Prioridad</label>
+                                <select class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                        id="editPriority" name="Tarea.Prioridad" required>
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                                <div class="mt-1 text-xs text-red-400">
+                                    Por favor, seleccione la prioridad.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="editAssignedTo" class="block text-white font-medium mb-1">Asignado a</label>
+                            <div id="editAssignedTo" class="max-h-40 overflow-y-auto p-2 bg-gray-700 rounded-lg space-y-2">
+                                <!-- Los usuarios se cargarán dinámicamente -->
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="editEstado" name="Tarea.Estado" />
+                        <div id="editTaskError" class="text-red-500 text-sm"></div>
+
+                        <button type="submit" class="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                            Actualizar Tarea
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal - Versión mejorada -->
+    <div class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" id="modalConfirmacion" tabindex="-1">
+        <div class="w-full max-w-md mx-auto">
+            <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-5 flex justify-between items-center">
+                    <h5 class="text-xl font-bold" id="modalConfirmacionLabel">Confirmar Eliminación</h5>
+                    <button id="cerrarConIcono" type="button" class="text-white text-2xl hover:text-gray-300 focus:outline-none" data-dismiss="modal" aria-label="Close">
+                        &times;
+                    </button>
+                </div>
+                <div class="p-6 text-gray-200">
+                    ¿Estás seguro de que deseas eliminar esta tarea?
+                </div>
+                <div class="px-6 pb-5 flex justify-end space-x-3">
+                    <button type="button" class="px-5 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition" id="cerrarModalConfirmar" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition" id="confirmarEliminar">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kanban Board -->
+    <div class="kanban-board flex gap-5 mt-5 p-8 overflow-x-auto">
+        <!-- Pending Column -->
+        <div class="column bg-gray-800 rounded-xl p-4 flex-1 min-w-[300px] shadow-lg" id="@Utility.Pendiente">
+            <h2 class="text-xl text-white text-center mb-4 pb-2 border-b border-gray-600">Pendiente</h2>
+            @foreach (var tarea in Model.Tablero.Tareas.Where(c => c.Estado == Utility.Pendiente))
+            {
+                <div class="card bg-gray-700 rounded-lg p-4 mb-4 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-grab" draggable="true" data-id="@tarea.Id_Tarea">
+                    <strong class="text-white text-lg block mb-2">@tarea.Titulo</strong>
+                    <small class="text-gray-300 block">@tarea.Descripcion</small>
+                    <small class="text-gray-300 block mt-1">Vence: @tarea.FechaVencimiento.ToShortDateString()</small>
+                    <small class="@(tarea.Prioridad.ToLower() == "baja" ? "bg-green-500" : tarea.Prioridad.ToLower() == "media" ? "bg-yellow-500" : "bg-red-500") text-white px-2 py-1 rounded-full inline-block mt-1">
+                        Prioridad: @tarea.Prioridad
+                    </small>
+                    @foreach (var usuario in tarea.UsuariosAsignados)
+                    {
+                        <small class="text-gray-300 block mt-1">Asignado a: @usuario.Nombre</small>
+                    }
+                    <div class="mt-3 space-x-2">
+                        <button onclick='editarTarea(@Html.Raw(Json.Serialize(tarea)))' class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Editar</button>
+                        <button onclick="abrirModalConfirmacion(@tarea.Id_Tarea)" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">Eliminar</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- In Progress Column -->
+        <div class="column bg-gray-800 rounded-xl p-4 flex-1 min-w-[300px] shadow-lg" id="@Utility.EnProgreso">
+            <h2 class="text-xl text-white text-center mb-4 pb-2 border-b border-gray-600">En Progreso</h2>
+            @foreach (var tarea in Model.Tablero.Tareas.Where(c => c.Estado == Utility.EnProgreso))
+            {
+                <div class="card bg-gray-700 rounded-lg p-4 mb-4 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-grab" draggable="true" data-id="@tarea.Id_Tarea">
+                    <strong class="text-white text-lg block mb-2">@tarea.Titulo</strong>
+                    <small class="text-gray-300 block">@tarea.Descripcion</small>
+                    <small class="text-gray-300 block mt-1">Vence: @tarea.FechaVencimiento.ToShortDateString()</small>
+                    <small class="@(tarea.Prioridad.ToLower() == "baja" ? "bg-green-500" : tarea.Prioridad.ToLower() == "media" ? "bg-yellow-500" : "bg-red-500") text-white px-2 py-1 rounded-full inline-block mt-1">
+                        Prioridad: @tarea.Prioridad
+                    </small>
+                    @foreach (var usuario in tarea.UsuariosAsignados)
+                    {
+                        <small class="text-gray-300 block mt-1">Asignado a: @usuario.Nombre</small>
+                    }
+                    <div class="mt-3 space-x-2">
+                        <button onclick='editarTarea(@Html.Raw(Json.Serialize(tarea)))' class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Editar</button>
+                        <button onclick="abrirModalConfirmacion(@tarea.Id_Tarea)" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">Eliminar</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Completed Column -->
+        <div class="column bg-gray-800 rounded-xl p-4 flex-1 min-w-[300px] shadow-lg" id="@Utility.Finalizado">
+            <h2 class="text-xl text-white text-center mb-4 pb-2 border-b border-gray-600">Finalizado</h2>
+            @foreach (var tarea in Model.Tablero.Tareas.Where(c => c.Estado == Utility.Finalizado))
+            {
+                <div class="card bg-gray-700 rounded-lg p-4 mb-4 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-grab" draggable="true" data-id="@tarea.Id_Tarea">
+                    <strong class="text-white text-lg block mb-2">@tarea.Titulo</strong>
+                    <small class="text-gray-300 block">@tarea.Descripcion</small>
+                    <small class="text-gray-300 block mt-1">Vence: @tarea.FechaVencimiento.ToShortDateString()</small>
+                    <small class="@(tarea.Prioridad.ToLower() == "baja" ? "bg-green-500" : tarea.Prioridad.ToLower() == "media" ? "bg-yellow-500" : "bg-red-500") text-white px-2 py-1 rounded-full inline-block mt-1">
+                        Prioridad: @tarea.Prioridad
+                    </small>
+                    @foreach (var usuario in tarea.UsuariosAsignados)
+                    {
+                        <small class="text-gray-300 block mt-1">Asignado a: @usuario.Nombre</small>
+                    }
+                    <div class="mt-3 space-x-2">
+                        <button onclick='editarTarea(@Html.Raw(Json.Serialize(tarea)))' class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Editar</button>
+                        <button onclick="abrirModalConfirmacion(@tarea.Id_Tarea)" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">Eliminar</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</body>
+</html>

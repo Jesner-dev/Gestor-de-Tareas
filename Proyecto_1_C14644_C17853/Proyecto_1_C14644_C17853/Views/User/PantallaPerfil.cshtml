@@ -1,0 +1,49 @@
+﻿@model Usuario
+
+<div class="flex justify-center items-center min-h-screen bg-[#1a1a1a] text-white px-4">
+    <div class="w-full max-w-md bg-[#2a2a2a] rounded-[12px] shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
+
+        <!-- Header del modal -->
+        <div class="bg-gradient-to-r from-[#0079bf] to-[#005f99] text-white rounded-t-[12px] px-6 py-4 flex justify-between items-center">
+            <h5 class="text-xl font-bold m-0">Editar Perfil</h5>
+        </div>
+
+        <!-- Cuerpo del modal -->
+        <div class="px-6 py-5">
+            <form asp-controller="User" asp-action="ActualizarUsuario" method="post" class="space-y-4">
+                <input asp-for="Id_Usuario" type="hidden" />
+
+                <!-- Campo Nombre -->
+                <div>
+                    <label asp-for="Nombre" class="block text-white font-bold mb-2">Nombre</label>
+                    <input asp-for="Nombre" type="text"
+                           class="w-full bg-[#3a3a3a] text-white placeholder-[#b3b3b3] border border-[#555] rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#0079bf]"
+                           placeholder="Nombre del usuario" required />
+                    <div class="text-red-400 text-sm mt-1 hidden peer-invalid:block">
+                        Por favor, ingrese el nombre del usuario.
+                    </div>
+                </div>
+
+                <!-- Campo Email -->
+                <div>
+                    <label asp-for="Email" class="block text-white font-bold mb-2">Email</label>
+                    <input asp-for="Email" type="email"
+                           class="w-full bg-[#3a3a3a] text-white placeholder-[#b3b3b3] border border-[#555] rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#0079bf]"
+                           placeholder="Correo electrónico" required />
+                    <div class="text-red-400 text-sm mt-1 hidden peer-invalid:block">
+                        Por favor, ingrese un correo electrónico válido.
+                    </div>
+                </div>
+                <input asp-for="Admin" type="hidden" />
+
+                <!-- Botón -->
+                <div class="flex justify-end pt-2">
+                    <button type="submit"
+                            class="bg-gradient-to-r from-[#0079bf] to-[#005f99] text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg hover:-translate-y-[2px] transition duration-300">
+                        Editar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
